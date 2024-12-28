@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:16
+    restart: on-failure
+    ports:
+      - 127.0.0.1:5432:5432
+    environment:
+      - POSTGRES_DB=${KEEPNCOOK_DB_NAME}
+      - POSTGRES_USER=${KEEPNCOOK_DB_USER}
+      - POSTGRES_PASSWORD=${KEEPNCOOK_DB_PASS}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+
+volumes:
+  postgres-volume:
