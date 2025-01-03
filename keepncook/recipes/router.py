@@ -1,16 +1,16 @@
 from fastapi import APIRouter
-from sqlalchemy import select
 
-from keepncook.db import async_session_maker
-from keepncook.recipes.models import Recipes
-
+from keepncook.recipes.schemas import SRecipe
+from keepncook.recipes.service import RecipesService
 
 router = APIRouter(prefix="/recipes", tags=["Recipes"])
 
 
 @router.get("")
-async def get_recipes():
-    async with async_session_maker() as session:
-        query = select(Recipes)
-        result = await session.execute(query)
-        return result.mappings().all()
+async def get_recipes() -> list[SRecipe]:
+    return await RecipesService.get_all_recipes()
+
+
+@router.get("/{id}")
+async def get_recipe(id: int) -> SRecipe:
+    return await RecipesService.get_recipe(id)
